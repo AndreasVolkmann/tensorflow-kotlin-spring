@@ -1,4 +1,4 @@
-package me.avo.spring.kotlin.test
+package me.avo.spring.kotlin
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties

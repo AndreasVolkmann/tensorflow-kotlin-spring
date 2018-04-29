@@ -1,7 +1,7 @@
-package me.avo.spring.kotlin.test.service.api
+package me.avo.spring.kotlin.service.api
 
-import me.avo.spring.kotlin.test.service.classifier.ObjectDetector
-import me.avo.spring.kotlin.test.service.storage.StorageService
+import me.avo.spring.kotlin.service.classifier.ObjectDetector
+import me.avo.spring.kotlin.service.storage.StorageService
 import org.springframework.stereotype.Controller
 
 @Controller

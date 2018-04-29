@@ -1,4 +1,4 @@
-package me.avo.spring.kotlin.test.service.storage
+package me.avo.spring.kotlin.service.storage
 
 class StorageFileNotFoundException : StorageException {
 

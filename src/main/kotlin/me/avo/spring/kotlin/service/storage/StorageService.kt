@@ -1,4 +1,4 @@
-package me.avo.spring.kotlin.test.service.storage
+package me.avo.spring.kotlin.service.storage
 
 import org.springframework.core.io.Resource
 import org.springframework.web.multipart.MultipartFile

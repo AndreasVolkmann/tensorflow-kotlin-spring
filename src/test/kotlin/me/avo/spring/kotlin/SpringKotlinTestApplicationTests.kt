@@ -1,4 +1,4 @@
-package me.avo.springkotlintest
+package me.avo.spring.kotlin
 
 import org.junit.Assert
 import org.junit.Test

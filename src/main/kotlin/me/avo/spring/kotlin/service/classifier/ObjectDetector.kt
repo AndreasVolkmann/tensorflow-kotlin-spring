@@ -1,7 +1,7 @@
-package me.avo.spring.kotlin.test.service.classifier
+package me.avo.spring.kotlin.service.classifier
 
-import me.avo.spring.kotlin.test.ApplicationProperties
-import me.avo.spring.kotlin.test.util.GraphBuilder
+import me.avo.spring.kotlin.ApplicationProperties
+import me.avo.spring.kotlin.util.GraphBuilder
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.tensorflow.Graph
@@ -43,7 +43,10 @@ class ObjectDetector(private val applicationProperties: ApplicationProperties) {
         }
 
         Session(graph).use {
-            it.runner().fetch(output.op().name()).run().get(0).expect(Float::class.java)
+            it.runner()
+                .fetch(output.op().name())
+                .run()[0]
+                .expect(Float::class.java)
         }
     }
 

@@ -1,4 +1,4 @@
-package me.avo.spring.kotlin.test.util
+package me.avo.spring.kotlin.util
 
 import org.tensorflow.DataType
 import org.tensorflow.Graph

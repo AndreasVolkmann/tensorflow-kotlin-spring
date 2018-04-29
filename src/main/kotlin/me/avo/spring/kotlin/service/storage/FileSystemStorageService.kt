@@ -1,6 +1,6 @@
-package me.avo.spring.kotlin.test.service.storage
+package me.avo.spring.kotlin.service.storage
 
-import me.avo.spring.kotlin.test.ApplicationProperties
+import me.avo.spring.kotlin.ApplicationProperties
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
