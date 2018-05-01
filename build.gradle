@@ -46,6 +46,8 @@ dependencies {
     implementation "org.tensorflow:tensorflow:$tensor_version"
     implementation "org.tensorflow:libtensorflow:$tensor_version"
 
+    implementation 'org.apache.commons:commons-math3:3.2'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
