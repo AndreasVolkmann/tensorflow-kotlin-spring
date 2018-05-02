@@ -1,7 +1,10 @@
 package me.avo.spring.kotlin.service.classifier
 
 import me.avo.spring.kotlin.model.BoundingBox
+import me.avo.spring.kotlin.model.BoxPosition
 import me.avo.spring.kotlin.model.Recognition
+import me.avo.spring.kotlin.util.math.ArgMax
+import me.avo.spring.kotlin.util.math.SoftMax
 import org.apache.commons.math3.analysis.function.Sigmoid
 import org.tensorflow.Tensor
 import java.util.*
@@ -36,13 +39,15 @@ object YOLOClassifier {
         for (cy in 0..SIZE) { // SIZE * SIZE cells
             for (cx in 0..SIZE) {
                 for (b in 0..NUMBER_OF_BOUNDING_BOX) { // 5 bounding boxes per each cell
-                    boundingBoxPerCell[cx][cy][b] = getModel(tensorFlowOutput, cx, cy, b, numClass, offset)
-
+                    val box = getModel(tensorFlowOutput, cx, cy, b, numClass, offset)
+                    boundingBoxPerCell[cx][cy][b] = box
+                    calculateTopPredictions(box, priorityQueue, labels)
+                    offset += numClass + 5
                 }
             }
         }
 
-        return TODO()
+        return getRecognition(priorityQueue)
     }
 
     private fun getModel(
@@ -79,8 +84,64 @@ object YOLOClassifier {
         labels: List<String>
     ) {
         for (i in 0..boundingBox.classes.size) {
-            //val argMax TODO
+            val argMax = SoftMax(boundingBox.classes).getValue().let(::ArgMax).getResult()
+            val confidenceInClass = argMax.maxValue * boundingBox.confidence
+            if (confidenceInClass > THRESHOLD) {
+                predictionQueue.add(
+                    Recognition(
+                        argMax.index, labels[argMax.index], confidenceInClass.toFloat(),
+                        BoxPosition(
+                            initialLeft = (boundingBox.x - boundingBox.width / 2).toFloat(),
+                            initialTop = (boundingBox.y - boundingBox.height / 2).toFloat(),
+                            width = boundingBox.width.toFloat(),
+                            height = boundingBox.height.toFloat()
+                        )
+                    )
+                )
+            }
+
         }
     }
+
+
+    private fun getRecognition(priorityQueue: PriorityQueue<Recognition>): List<Recognition> {
+        val recognitions = mutableListOf<Recognition>()
+
+        if (priorityQueue.isNotEmpty()) {
+            val bestRecognition = priorityQueue.poll()
+            recognitions.add(bestRecognition)
+
+            for (i in 0 until Math.min(priorityQueue.size, MAX_RESULTS)) {
+                val recognition = priorityQueue.poll()
+                val overlaps = recognitions.any {
+                    getIntersectionProportion(it.location, recognition.location) > OVERLAP_THRESHOLD
+                }
+                if (!overlaps) {
+                    recognitions.add(recognition)
+                }
+            }
+        }
+        return recognitions
+    }
+
+    private fun getIntersectionProportion(primaryShape: BoxPosition, secondaryShape: BoxPosition): Float =
+        if (overlaps(primaryShape, secondaryShape)) {
+            val rightLeft =
+                Math.min(primaryShape.right, secondaryShape.right) - Math.max(primaryShape.left, secondaryShape.left)
+            val topBottom =
+                Math.min(primaryShape.bottom, secondaryShape.bottom) - Math.max(primaryShape.top, secondaryShape.top)
+            val intersectionSurface = Math.max(0f, rightLeft) * Math.max(0f, topBottom)
+
+            val surfacePrimary =
+                Math.abs(primaryShape.right - primaryShape.left) * Math.abs(primaryShape.bottom - primaryShape.top)
+
+            intersectionSurface / surfacePrimary
+        } else 0f
+
+    private fun overlaps(primary: BoxPosition, secondary: BoxPosition): Boolean =
+        primary.left < secondary.right
+                && primary.right > secondary.left
+                && primary.top < secondary.bottom
+                && primary.bottom > secondary.top
 
 }

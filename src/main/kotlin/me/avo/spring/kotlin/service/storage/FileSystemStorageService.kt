@@ -2,6 +2,7 @@ package me.avo.spring.kotlin.service.storage
 
 import me.avo.spring.kotlin.ApplicationProperties
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -22,7 +23,7 @@ import java.util.stream.Stream
 
 @Service
 @EnableScheduling
-class FileSystemStorageService(applicationProperties: ApplicationProperties) :
+class FileSystemStorageService @Autowired constructor(applicationProperties: ApplicationProperties) :
     StorageService {
 
     private val logger = LoggerFactory.getLogger(FileSystemStorageService::class.java)
@@ -43,9 +44,10 @@ class FileSystemStorageService(applicationProperties: ApplicationProperties) :
 
     override fun store(file: MultipartFile): String {
         val filename =
-            StringUtils.cleanPath(file.originalFilename ?: throw StorageException(
-                "Failed to store file without name"
-            )
+            StringUtils.cleanPath(
+                file.originalFilename ?: throw StorageException(
+                    "Failed to store file without name"
+                )
             )
         try {
             if (file.isEmpty) throw StorageException("Fialed to store empty file $filename")
