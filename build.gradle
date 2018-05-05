@@ -34,21 +34,24 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.jetbrains.kotlin:kotlin-reflect"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile "org.jetbrains.kotlin:kotlin-reflect"
 
     /* Spring */
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation "org.springframework:spring-web"
+    compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile "org.springframework:spring-web"
+    compile "org.springframework:spring-webmvc"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     /* TensorFlow */
-    implementation "org.tensorflow:tensorflow:$tensor_version"
-    implementation "org.tensorflow:libtensorflow:$tensor_version"
+    compile "org.tensorflow:tensorflow:$tensor_version"
+    compile "org.tensorflow:libtensorflow:$tensor_version"
 
-    implementation 'org.apache.commons:commons-math3:3.2'
+    compile 'org.apache.commons:commons-math3:3.2'
+    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.5'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
 
 sourceCompatibility = 1.8
